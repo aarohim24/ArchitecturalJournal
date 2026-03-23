@@ -53,12 +53,13 @@
   object-fit: cover;
 }
 
-.fragment-item-text {
+.fragment-item-text { /* #genai */
   font-family: var(--font-serif);
   font-size: 1.4rem;
   font-style: italic;
   color: var(--raisin-black);
   line-height: 1.7;
+  word-break: break-word;
 }
 
 @media (max-width: 600px) {

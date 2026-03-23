@@ -127,12 +127,14 @@
 
 .writings-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr)); /* #genai */
   gap: 2rem;
 }
 
 .writing-card {
   display: block;
+  min-width: 0; /* #genai */
+  overflow: hidden;
   transition: transform 0.3s ease;
 }
 
@@ -169,11 +171,15 @@
   font-style: italic;
 }
 
-.writing-card-summary {
+.writing-card-summary { /* #genai */
   font-family: var(--font-sans);
   font-size: 1rem;
   color: var(--text-muted);
   line-height: 1.7;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* ── Fragments (blue background, white heading) ── */
@@ -224,7 +230,7 @@
 
 .fragments-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr)); /* #genai */
   gap: 1.5rem;
 }
 
@@ -235,6 +241,8 @@
   background: var(--cream);
   padding: 1.5rem;
   border-radius: 4px;
+  min-width: 0; /* #genai */
+  overflow: hidden;
   transition: transform 0.3s;
   cursor: pointer;
 }
@@ -259,12 +267,17 @@
   object-fit: cover;
 }
 
-.fragment-text {
+.fragment-text { /* #genai */
   font-family: var(--font-serif);
   font-size: 1.3rem;
   font-style: italic;
   color: var(--raisin-black);
   line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
 }
 
 /* ── Visual Stories (same cream as featured writings) ── */
