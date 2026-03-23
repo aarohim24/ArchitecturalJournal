@@ -1,0 +1,62 @@
+/* #genai */
+.vs-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.vs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem;
+}
+
+.vs-card {
+  display: block;
+  transition: transform 0.3s;
+}
+
+.vs-card:hover {
+  transform: translateY(-4px);
+}
+
+.vs-card-images {
+  width: 100%;
+  height: 260px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.vs-card-images img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vs-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  color: var(--ruddy-brown);
+  font-style: italic;
+  margin-bottom: 0.4rem;
+}
+
+.vs-card-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+.vs-card-count {
+  font-size: 0.72rem;
+  color: var(--cambridge-blue);
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 650px) {
+  .vs-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,200 @@
+/* #genai */
+.admin-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.admin-header {
+  margin-bottom: 2rem;
+}
+
+.admin-header h1 {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: var(--raisin-black);
+  margin-bottom: 0.3rem;
+}
+
+.admin-header p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.admin-flash {
+  background: var(--cambridge-blue);
+  color: var(--raisin-black);
+  padding: 0.75rem 1.25rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid rgba(46, 33, 28, 0.1);
+}
+
+.admin-tab {
+  padding: 0.75rem 1.5rem;
+  background: none;
+  border: none;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.3s;
+}
+
+.admin-tab.active {
+  color: var(--ruddy-brown);
+  border-bottom-color: var(--ruddy-brown);
+}
+
+.admin-section h2 {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  color: var(--ruddy-brown);
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+}
+
+.admin-section h2:first-child {
+  margin-top: 0;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-form input[type="text"],
+.admin-form input:not([type]),
+.admin-form textarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(46, 33, 28, 0.15);
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  background: var(--warm-white);
+  color: var(--text-dark);
+  transition: border-color 0.3s;
+  resize: vertical;
+}
+
+.admin-form input:focus,
+.admin-form textarea:focus {
+  outline: none;
+  border-color: var(--ruddy-brown);
+}
+
+.admin-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.admin-checkbox input[type="checkbox"] {
+  accent-color: var(--ruddy-brown);
+}
+
+.admin-file {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.admin-file span {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+
+.admin-file input[type="file"] {
+  font-size: 0.85rem;
+}
+
+.admin-submit {
+  align-self: flex-start;
+  padding: 0.75rem 2rem;
+  background: var(--ruddy-brown);
+  color: var(--pearl);
+  border: none;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background 0.3s;
+}
+
+.admin-submit:hover {
+  background: var(--saddle-brown);
+}
+
+.admin-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--cream);
+  border-radius: 6px;
+}
+
+.admin-list li span {
+  font-size: 0.88rem;
+  color: var(--text-dark);
+}
+
+.admin-list li button {
+  background: none;
+  border: 1px solid rgba(192, 98, 38, 0.3);
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  color: var(--ruddy-brown);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+
+.admin-list li button:hover {
+  background: var(--ruddy-brown);
+  color: var(--pearl);
+}
+
+.admin-empty {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--text-muted);
+  padding: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.featured-badge {
+  font-size: 0.65rem;
+  background: var(--ruddy-brown);
+  color: var(--pearl);
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  margin-left: 0.5rem;
+  letter-spacing: 0.05em;
+  vertical-align: middle;
+}

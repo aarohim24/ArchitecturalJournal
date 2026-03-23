@@ -1,0 +1,65 @@
+/* #genai */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500&family=Caveat:wght@400;500;600;700&display=swap');
+
+:root {
+  --raisin-black: #2E211C;
+  --cambridge-blue: #9CADB5;
+  --pearl: #EAE0C7;
+  --ruddy-brown: #C06226;
+  --saddle-brown: #984619;
+  --cream: #EDE4D3;
+  --warm-white: #FAF8F4;
+  --text-dark: #2E211C;
+  --text-muted: #6B5B4F;
+
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-handwritten: 'Caveat', cursive;
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 18px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1.05rem;
+  color: var(--text-dark);
+  background-color: var(--cambridge-blue);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+::selection {
+  background-color: var(--cambridge-blue);
+  color: var(--raisin-black);
+}

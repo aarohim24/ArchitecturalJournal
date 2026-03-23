@@ -1,0 +1,78 @@
+/* #genai */
+.writing-detail {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 2rem 4rem;
+}
+
+.back-link {
+  display: inline-block;
+  font-size: 0.78rem;
+  color: var(--ruddy-brown);
+  letter-spacing: 0.05em;
+  margin-bottom: 2rem;
+  transition: opacity 0.3s;
+}
+
+.back-link:hover {
+  opacity: 0.7;
+}
+
+.detail-cover {
+  width: 100%;
+  height: 360px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 2.5rem;
+}
+
+.detail-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(46, 33, 28, 0.1);
+}
+
+.detail-header h1 {
+  font-family: var(--font-serif);
+  font-size: 2.8rem;
+  color: var(--raisin-black);
+  font-weight: 300;
+  margin-bottom: 0.5rem;
+}
+
+.detail-subtitle {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  font-style: italic;
+  font-weight: 300;
+  margin-bottom: 1rem;
+}
+
+.detail-summary {
+  font-size: 0.9rem;
+  color: var(--ruddy-brown);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.detail-body p {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: var(--text-dark);
+  margin-bottom: 1.5rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem;
+  color: var(--text-muted);
+  font-style: italic;
+}

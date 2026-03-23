@@ -1,0 +1,27 @@
+/* #genai */
+.footer {
+  background-color: var(--saddle-brown);
+  background-image: url('/noise.png');
+  color: var(--pearl);
+  text-align: center;
+  padding: 2.5rem 2rem;
+}
+
+.footer-quote p {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-style: italic;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.quote-author {
+  display: inline-block;
+  margin-top: 0.75rem;
+  font-style: normal;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
+}

@@ -1,0 +1,61 @@
+/* #genai */
+.about-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 2rem 4rem;
+}
+
+.about-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 3.5rem;
+  margin-bottom: 3rem;
+}
+
+.about-content {
+  flex: 1;
+  padding-top: 0.25rem;
+}
+
+.about-content h1 {
+  font-family: var(--font-serif);
+  font-size: 2.8rem;
+  font-weight: 300;
+  color: var(--raisin-black);
+  margin-bottom: 1.5rem;
+}
+
+.about-body p {
+  font-size: 1rem;
+  line-height: 1.9;
+  color: var(--text-dark);
+  margin-bottom: 1.5rem;
+}
+
+.about-image {
+  flex-shrink: 0;
+  width: 300px;
+  height: auto;
+  max-height: 420px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 0.25rem;
+  box-shadow: 0 6px 24px rgba(46, 33, 28, 0.12);
+}
+
+.about-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 700px) {
+  .about-layout {
+    flex-direction: column;
+  }
+
+  .about-image {
+    width: 100%;
+    height: 300px;
+  }
+}

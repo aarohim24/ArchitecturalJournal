@@ -1,0 +1,68 @@
+/* #genai */
+.fragments-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.fragments-page-title {
+  font-family: var(--font-handwritten) !important;
+  font-size: 2.8rem !important;
+  color: var(--raisin-black);
+}
+
+.fragments-masonry {
+  columns: 2;
+  column-gap: 2rem;
+}
+
+.fragment-item {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  break-inside: avoid;
+  background: var(--pearl);
+  border-radius: 6px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border-left: 3px solid var(--ruddy-brown);
+  transition: transform 0.3s;
+  cursor: pointer;
+}
+
+.fragment-item:hover {
+  transform: translateY(-2px);
+}
+
+.fragment-item:nth-child(even) {
+  background: var(--cream);
+  border-left-color: var(--cambridge-blue);
+}
+
+.fragment-item-image {
+  width: 100%;
+  height: 160px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.fragment-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fragment-item-text {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-style: italic;
+  color: var(--raisin-black);
+  line-height: 1.7;
+}
+
+@media (max-width: 600px) {
+  .fragments-masonry {
+    columns: 1;
+  }
+}
