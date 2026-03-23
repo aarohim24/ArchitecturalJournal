@@ -39,18 +39,22 @@
   border-left-color: var(--cambridge-blue);
 }
 
-.fragment-item-image {
+.fragment-item-image { /* #genai */
+  position: relative;
   width: 100%;
-  height: 160px;
+  aspect-ratio: 16 / 10;
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 1rem;
 }
 
 .fragment-item-image img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
 .fragment-item-text { /* #genai */
