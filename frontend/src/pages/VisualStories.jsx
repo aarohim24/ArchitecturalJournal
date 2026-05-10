@@ -20,7 +20,7 @@ export default function VisualStories() {
 
       <div className="vs-grid">
         {stories.map(s => (
-          <Link to={`/visual-stories/${s.id}`} key={s.id} className="vs-card">
+          <Link to={`/visual-stories/${s.id}`} key={s.id} className="vs-card" onClick={() => window.gtag('event', 'visual_story_click', { story_id: s.id, story_title: s.title })}>
             <div className="vs-card-images">
               {s.images && s.images.length > 0 ? (
                 <img src={api.imageUrl(s.images[0].image_path)} alt={s.title} />

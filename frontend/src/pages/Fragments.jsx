@@ -20,7 +20,7 @@ export default function Fragments() {
 
       <div className="fragments-masonry">
         {fragments.map(f => (
-          <Link to={`/fragments/${f.id}`} key={f.id} className="fragment-item">
+          <Link to={`/fragments/${f.id}`} key={f.id} className="fragment-item" onClick={() => window.gtag('event', 'fragment_click', { fragment_id: f.id })}>
             {f.image && (
               <div className="fragment-item-image">
                 <img src={api.imageUrl(f.image)} alt="" />

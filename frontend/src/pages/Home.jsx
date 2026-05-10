@@ -109,7 +109,7 @@ export default function Home() {
           {writings.length > 0 ? (
             <Slider className="writings-slider">
               {writings.map(w => (
-                <Link to={`/writings/${w.id}`} key={w.id} className="writing-card">
+                <Link to={`/writings/${w.id}`} key={w.id} className="writing-card" onClick={() => window.gtag('event', 'writing_click', { writing_id: w.id, writing_title: w.title })}>
                   <div className="writing-card-image">
                     {w.cover_image ? (
                       <img src={api.imageUrl(w.cover_image)} alt={w.title} />
@@ -141,7 +141,7 @@ export default function Home() {
           {fragments.length > 0 ? (
             <Slider className="fragments-slider">
               {fragments.map(f => (
-                <Link to={`/fragments/${f.id}`} key={f.id} className="fragment-card">
+                <Link to={`/fragments/${f.id}`} key={f.id} className="fragment-card" onClick={() => window.gtag('event', 'fragment_click', { fragment_id: f.id })}>
                   {f.image && (
                     <div className="fragment-image">
                       <img src={api.imageUrl(f.image)} alt="" />
@@ -170,7 +170,7 @@ export default function Home() {
           {stories.length > 0 ? (
             <Slider className="stories-slider">
               {stories.map(s => (
-                <Link to={`/visual-stories/${s.id}`} key={s.id} className="story-preview-card">
+                <Link to={`/visual-stories/${s.id}`} key={s.id} className="story-preview-card" onClick={() => window.gtag('event', 'visual_story_click', { story_id: s.id, story_title: s.title })}>
                   {s.images && s.images.length > 0 && (
                     <div className="story-card-image">
                       <img src={api.imageUrl(s.images[0].image_path)} alt={s.title} />

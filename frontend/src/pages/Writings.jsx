@@ -20,7 +20,7 @@ export default function Writings() {
 
       <div className="writings-list">
         {writings.map(w => (
-          <Link to={`/writings/${w.id}`} key={w.id} className="writing-list-item">
+          <Link to={`/writings/${w.id}`} key={w.id} className="writing-list-item" onClick={() => window.gtag('event', 'writing_click', { writing_id: w.id, writing_title: w.title })}>
             <div className="writing-list-image">
               {w.cover_image ? (
                 <img src={api.imageUrl(w.cover_image)} alt={w.title} />
