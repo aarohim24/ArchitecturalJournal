@@ -20,6 +20,7 @@ export default function WritingDetail() {
     <article className="writing-detail">
       <Link to="/writings" className="back-link">&larr; back to writings</Link>
 
+      {/* Cover photo — 4:3 */}
       {writing.cover_image && (
         <div className="detail-cover">
           <img src={api.imageUrl(writing.cover_image)} alt={writing.title} />
@@ -37,6 +38,23 @@ export default function WritingDetail() {
           para.trim() ? <p key={i}>{para}</p> : null
         )}
       </div>
+
+      {/* Supporting photos */}
+      {writing.supporting_images?.length > 0 && (
+        <div className="supporting-photos">
+          <h3 className="supporting-photos-heading">photographs</h3>
+          <div className="supporting-photos-grid">
+            {writing.supporting_images.map(img => (
+              <figure key={img.id} className="supporting-photo">
+                <div className="supporting-photo-frame">
+                  <img src={api.imageUrl(img.image_path)} alt={img.caption || ''} loading="lazy" />
+                </div>
+                {img.caption && <figcaption>{img.caption}</figcaption>}
+              </figure>
+            ))}
+          </div>
+        </div>
+      )}
     </article>
   )
 }

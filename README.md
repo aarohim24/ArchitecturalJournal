@@ -4,9 +4,10 @@ A full-stack website for publishing architecture-related articles, fragments, an
 
 ## Tech Stack
 
-- **Frontend**: React + Vite
-- **Backend**: Python + FastAPI
-- **Database**: SQLite (via SQLAlchemy)
+- **Frontend**: React + Vite (deployed on Vercel)
+- **Backend**: Python + FastAPI (deployed on Render)
+- **Database**: PostgreSQL via [Neon](https://neon.tech) (SQLite used locally by default)
+- **Image Storage**: [Cloudinary](https://cloudinary.com) (local `/uploads` folder used as fallback)
 
 ## Color Palette
 
@@ -27,18 +28,42 @@ cd backend
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+cp .env.example .env   # then fill in your values
 python -m uvicorn main:app --reload --port 8000
 ```
+
+> **Python version**: 3.11.9 (matches Render deployment — see `render.yaml`)
 
 ### Frontend
 
 ```bash
 cd frontend
 npm install
+cp .env.example .env   # then fill in your values
 npm run dev
 ```
 
 The frontend runs at `http://localhost:5173` and the backend API at `http://localhost:8000`.
+
+## Environment Variables
+
+### Backend (`backend/.env`)
+
+| Variable | Required | Description |
+|---|---|---|
+| `DATABASE_URL` | Yes (prod) | PostgreSQL connection string from Neon |
+| `CLOUDINARY_CLOUD_NAME` | Yes (prod) | Cloudinary cloud name |
+| `CLOUDINARY_API_KEY` | Yes (prod) | Cloudinary API key |
+| `CLOUDINARY_API_SECRET` | Yes (prod) | Cloudinary API secret |
+| `FRONTEND_URL` | Yes (prod) | Vercel deployment URL (used for CORS) |
+| `ADMIN_SECRET` | Yes (prod) | Secret verified server-side for all write requests |
+
+### Frontend (`frontend/.env`)
+
+| Variable | Required | Description |
+|---|---|---|
+| `VITE_API_URL` | Yes (prod) | Render backend URL |
+| `VITE_ADMIN_KEY` | Yes | Must match `ADMIN_SECRET` on the backend |
 
 ## Pages
 
@@ -47,17 +72,31 @@ The frontend runs at `http://localhost:5173` and the backend API at `http://loca
 - **Fragments** — Short thoughts and architectural observations
 - **Visual Stories** — Image-based architectural narratives
 - **About** — Author introduction and site purpose
-- **Admin** (`/admin`) — Content management interface for uploading writings, fragments, and visual stories
+- **Admin** (`/admin/<VITE_ADMIN_KEY>`) — Content management interface
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET/POST | `/api/writings` | List or create writings |
-| GET/PUT/DELETE | `/api/writings/:id` | Read, update, or delete a writing |
-| GET/POST | `/api/fragments` | List or create fragments |
-| DELETE | `/api/fragments/:id` | Delete a fragment |
-| GET/POST | `/api/visual-stories` | List or create visual stories |
-| GET/DELETE | `/api/visual-stories/:id` | Read or delete a visual story |
-| GET/PUT | `/api/about` | Read or update about content |
-| POST | `/api/seed` | Seed database with sample data |
+| Method | Endpoint | Auth Required | Description |
+|--------|----------|---------------|-------------|
+| GET | `/api/health` | No | Health check |
+| GET | `/api/writings` | No | List writings (optional `?featured=true`) |
+| POST | `/api/writings` | Yes | Create a writing |
+| GET | `/api/writings/:id` | No | Get a writing |
+| PUT | `/api/writings/:id` | Yes | Update a writing |
+| DELETE | `/api/writings/:id` | Yes | Delete a writing |
+| GET | `/api/fragments` | No | List fragments |
+| POST | `/api/fragments` | Yes | Create a fragment |
+| GET | `/api/fragments/:id` | No | Get a fragment |
+| PUT | `/api/fragments/:id` | Yes | Update a fragment |
+| DELETE | `/api/fragments/:id` | Yes | Delete a fragment |
+| GET | `/api/visual-stories` | No | List visual stories |
+| POST | `/api/visual-stories` | Yes | Create a visual story |
+| GET | `/api/visual-stories/:id` | No | Get a visual story |
+| PUT | `/api/visual-stories/:id` | Yes | Update a visual story's title/description |
+| DELETE | `/api/visual-stories/:id` | Yes | Delete a visual story |
+| GET | `/api/about` | No | Get about content |
+| PUT | `/api/about` | Yes | Update about content |
+| GET | `/api/settings` | No | Get site settings |
+| PUT | `/api/settings/hero-image` | Yes | Update hero image |
+
+> Auth = `X-Admin-Key` header with value matching `ADMIN_SECRET`.

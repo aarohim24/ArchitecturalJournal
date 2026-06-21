@@ -31,26 +31,30 @@
   gap: 2.5rem;
 }
 
-.writing-list-item { /* #genai */
+.writing-list-item {
   display: flex;
   gap: 2rem;
   padding-bottom: 2.5rem;
   border-bottom: 1px solid rgba(46, 33, 28, 0.06);
   transition: transform 0.3s;
   overflow: hidden;
+  text-decoration: none;
+  color: inherit;
 }
 
 .writing-list-item:hover {
   transform: translateX(4px);
 }
 
-.writing-list-image { /* #genai */
+/* ── Cover photo — 4:3 ratio ── */
+.writing-list-image {
   position: relative;
   flex-shrink: 0;
   width: 260px;
-  aspect-ratio: 13 / 9;
+  aspect-ratio: 4 / 3;
   border-radius: 6px;
   overflow: hidden;
+  background: var(--pearl);
 }
 
 .writing-list-image img {
@@ -60,6 +64,12 @@
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.image-placeholder {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--pearl) 0%, var(--cream) 100%);
 }
 
 .writing-list-content {
@@ -82,7 +92,7 @@
   margin-bottom: 0.75rem;
 }
 
-.writing-summary { /* #genai */
+.writing-summary {
   font-size: 0.88rem;
   color: var(--text-muted);
   line-height: 1.7;
@@ -107,13 +117,45 @@
   padding: 3rem 0;
 }
 
+/* ── Skeleton loading ── */
+.skeleton-item {
+  pointer-events: none;
+}
+
+.skeleton-box {
+  background: linear-gradient(90deg, var(--pearl) 25%, var(--cream) 50%, var(--pearl) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 6px;
+}
+
+.skeleton-line {
+  height: 14px;
+  border-radius: 4px;
+  margin-bottom: 0.6rem;
+  background: linear-gradient(90deg, var(--pearl) 25%, var(--cream) 50%, var(--pearl) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+.sk-title  { height: 22px; width: 70%; }
+.sk-subtitle { height: 14px; width: 50%; }
+.sk-body   { width: 100%; }
+.sk-short  { width: 65%; }
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Responsive ── */
 @media (max-width: 700px) {
   .writing-list-item {
     flex-direction: column;
   }
 
-  .writing-list-image { /* #genai */
+  .writing-list-image {
     width: 100%;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 4 / 3;
   }
 }

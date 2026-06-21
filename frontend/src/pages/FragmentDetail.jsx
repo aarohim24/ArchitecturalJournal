@@ -18,15 +18,32 @@ export default function FragmentDetail() {
     <article className="fragment-detail">
       <Link to="/fragments" className="back-link">&larr; back to fragments</Link>
 
-      {fragment.image && (
-        <div className="fd-image">
-          <img src={api.imageUrl(fragment.image)} alt="" />
+      {/* Cover photo — 4:3 */}
+      {fragment.cover_image && (
+        <div className="detail-cover">
+          <img src={api.imageUrl(fragment.cover_image)} alt={fragment.title || ''} />
         </div>
       )}
 
-      <blockquote className="fd-text">
-        {fragment.text}
-      </blockquote>
+      <header className="detail-header">
+        {fragment.title && <h1>{fragment.title}</h1>}
+        {fragment.subtitle && <h2 className="detail-subtitle">{fragment.subtitle}</h2>}
+        <blockquote className="fd-text">{fragment.text}</blockquote>
+      </header>
+
+      {/* Supporting photos */}
+      {fragment.supporting_images?.length > 0 && (
+        <div className="supporting-photos">
+          {fragment.supporting_images.map(img => (
+            <figure key={img.id} className="supporting-photo">
+              <div className="supporting-photo-frame">
+                <img src={api.imageUrl(img.image_path)} alt={img.caption || ''} loading="lazy" />
+              </div>
+              {img.caption && <figcaption>{img.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      )}
     </article>
   )
 }

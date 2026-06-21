@@ -1,11 +1,50 @@
-// #genai
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../api'
 import heroImg from '../assets/hero.png'
 import './Home.css'
 
-function useSlider() { // #genai
+/** Safe wrapper around GA events — no-ops when gtag is unavailable. */
+function trackEvent(name, params) {
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', name, params)
+  }
+}
+
+function WritingCardSkeleton() {
+  return (
+    <div className="writing-card skeleton-item" aria-hidden="true">
+      <div className="writing-card-image skeleton-box" />
+      <div className="skeleton-line sk-title" />
+      <div className="skeleton-line sk-body" />
+      <div className="skeleton-line sk-body sk-short" />
+    </div>
+  )
+}
+
+function FragmentCardSkeleton() {
+  return (
+    <div className="fragment-card skeleton-item" aria-hidden="true">
+      <div className="fragment-image skeleton-box" />
+      <div className="skeleton-line sk-body" />
+      <div className="skeleton-line sk-body sk-short" />
+    </div>
+  )
+}
+
+function StoryCardSkeleton() {
+  return (
+    <div className="story-preview-card skeleton-item" aria-hidden="true">
+      <div className="story-card-image skeleton-box" />
+      <div style={{ padding: '1.25rem 1.5rem 1rem' }}>
+        <div className="skeleton-line sk-title" />
+        <div className="skeleton-line sk-body" />
+      </div>
+    </div>
+  )
+}
+
+function useSlider() {
   const ref = useRef(null)
   const [canLeft, setCanLeft] = useState(false)
   const [canRight, setCanRight] = useState(false)
@@ -38,7 +77,7 @@ function useSlider() { // #genai
   return { ref, canLeft, canRight, scrollLeft: () => scroll(-1), scrollRight: () => scroll(1), update }
 }
 
-function Slider({ children, className = '' }) { // #genai
+function Slider({ children, className = '' }) {
   const { ref, canLeft, canRight, scrollLeft, scrollRight } = useSlider()
   return (
     <div className={`slider-wrapper ${className}`}>
@@ -63,15 +102,16 @@ export default function Home() {
   const [writings, setWritings] = useState([])
   const [fragments, setFragments] = useState([])
   const [stories, setStories] = useState([])
-  const [heroSrc, setHeroSrc] = useState(heroImg) // #genai
+  const [heroSrc, setHeroSrc] = useState(heroImg)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    api.getWritings(true).then(setWritings)
-    api.getFragments().then(setFragments)
-    api.getVisualStories().then(setStories)
-    api.getSettings().then(s => { // #genai
-      if (s.hero_image) setHeroSrc(api.imageUrl(s.hero_image))
-    })
+    Promise.allSettled([
+      api.getWritings(true).then(setWritings),
+      api.getFragments().then(setFragments),
+      api.getVisualStories().then(setStories),
+      api.getSettings().then(s => { if (s.hero_image) setHeroSrc(api.imageUrl(s.hero_image)) }),
+    ]).finally(() => setLoading(false))
   }, [])
 
   return (
@@ -106,10 +146,19 @@ export default function Home() {
             <h2 className="section-title">featured writings</h2>
             <span className="section-subtitle">thoughts on architecture as it is lived and perceived</span>
           </div>
-          {writings.length > 0 ? (
+          {loading ? (
+            <Slider className="writings-slider">
+              {[1, 2, 3].map(i => <WritingCardSkeleton key={i} />)}
+            </Slider>
+          ) : writings.length > 0 ? (
             <Slider className="writings-slider">
               {writings.map(w => (
-                <Link to={`/writings/${w.id}`} key={w.id} className="writing-card" onClick={() => window.gtag('event', 'writing_click', { writing_id: w.id, writing_title: w.title })}>
+                <Link
+                  to={`/writings/${w.id}`}
+                  key={w.id}
+                  className="writing-card"
+                  onClick={() => trackEvent('writing_click', { writing_id: w.id, writing_title: w.title })}
+                >
                   <div className="writing-card-image">
                     {w.cover_image ? (
                       <img src={api.imageUrl(w.cover_image)} alt={w.title} />
@@ -138,15 +187,25 @@ export default function Home() {
             <h2 className="section-title fragment-title">fragments</h2>
             <span className="section-subtitle">moments of noticing, written down before they pass</span>
           </div>
-          {fragments.length > 0 ? (
+          {loading ? (
+            <Slider className="fragments-slider">
+              {[1, 2, 3].map(i => <FragmentCardSkeleton key={i} />)}
+            </Slider>
+          ) : fragments.length > 0 ? (
             <Slider className="fragments-slider">
               {fragments.map(f => (
-                <Link to={`/fragments/${f.id}`} key={f.id} className="fragment-card" onClick={() => window.gtag('event', 'fragment_click', { fragment_id: f.id })}>
-                  {f.image && (
+                <Link
+                  to={`/fragments/${f.id}`}
+                  key={f.id}
+                  className="fragment-card"
+                  onClick={() => trackEvent('fragment_click', { fragment_id: f.id })}
+                >
+                  {f.cover_image && (
                     <div className="fragment-image">
-                      <img src={api.imageUrl(f.image)} alt="" />
+                      <img src={api.imageUrl(f.cover_image)} alt="" loading="lazy" />
                     </div>
                   )}
+                  {f.title && <p className="fragment-card-title">{f.title}</p>}
                   <p className="fragment-text">{f.text}</p>
                 </Link>
               ))}
@@ -167,10 +226,19 @@ export default function Home() {
             <h2 className="section-title vs-title">visual stories</h2>
             <span className="section-subtitle">architecture observed through visual composition</span>
           </div>
-          {stories.length > 0 ? (
+          {loading ? (
+            <Slider className="stories-slider">
+              {[1, 2].map(i => <StoryCardSkeleton key={i} />)}
+            </Slider>
+          ) : stories.length > 0 ? (
             <Slider className="stories-slider">
               {stories.map(s => (
-                <Link to={`/visual-stories/${s.id}`} key={s.id} className="story-preview-card" onClick={() => window.gtag('event', 'visual_story_click', { story_id: s.id, story_title: s.title })}>
+                <Link
+                  to={`/visual-stories/${s.id}`}
+                  key={s.id}
+                  className="story-preview-card"
+                  onClick={() => trackEvent('visual_story_click', { story_id: s.id, story_title: s.title })}
+                >
                   {s.images && s.images.length > 0 && (
                     <div className="story-card-image">
                       <img src={api.imageUrl(s.images[0].image_path)} alt={s.title} />

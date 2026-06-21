@@ -194,7 +194,7 @@
 .writing-card-image { /* #genai */
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 4 / 3;
   border-radius: 6px;
   overflow: hidden;
   margin-bottom: 1rem;
@@ -330,6 +330,14 @@
   word-break: break-word;
 }
 
+.fragment-card-title {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--raisin-black);
+  margin-bottom: 0.4rem;
+}
+
 /* ── Visual Stories (cream) ── */
 .visual-stories-section {
   background-color: var(--cream);
@@ -367,7 +375,7 @@
 .story-card-image { /* #genai */
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 4 / 3;
   overflow: hidden;
 }
 
@@ -480,4 +488,33 @@
     height: 32px;
     font-size: 1.2rem;
   }
+}
+
+/* ── Skeleton loading ── */
+.skeleton-item {
+  pointer-events: none;
+}
+
+.skeleton-box {
+  background: linear-gradient(90deg, var(--pearl) 25%, var(--cream) 50%, var(--pearl) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+.skeleton-line {
+  height: 14px;
+  border-radius: 4px;
+  margin-bottom: 0.6rem;
+  background: linear-gradient(90deg, var(--pearl) 25%, var(--cream) 50%, var(--pearl) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+.sk-title  { height: 20px; width: 70%; }
+.sk-body   { width: 100%; }
+.sk-short  { width: 60%; }
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }

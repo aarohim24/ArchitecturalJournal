@@ -22,13 +22,15 @@
   transform: translateY(-4px);
 }
 
+/* ── Cover thumbnail — 4:3 ratio ── */
 .vs-card-images { /* #genai */
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 4 / 3;
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 1rem;
+  background: var(--pearl);
 }
 
 .vs-card-images img {
@@ -38,6 +40,12 @@
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.image-placeholder {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--pearl) 0%, var(--cream) 100%);
 }
 
 .vs-card-title {
@@ -59,6 +67,35 @@
   font-size: 0.72rem;
   color: var(--cambridge-blue);
   letter-spacing: 0.05em;
+}
+
+/* ── Skeleton loading ── */
+.skeleton-item {
+  pointer-events: none;
+}
+
+.skeleton-box {
+  background: linear-gradient(90deg, var(--pearl) 25%, var(--cream) 50%, var(--pearl) 75%);
+  background-size: 200% 100%;
+  animation: vs-shimmer 1.4s infinite;
+  border-radius: 8px;
+}
+
+.skeleton-line {
+  height: 14px;
+  border-radius: 4px;
+  margin-bottom: 0.6rem;
+  background: linear-gradient(90deg, var(--pearl) 25%, var(--cream) 50%, var(--pearl) 75%);
+  background-size: 200% 100%;
+  animation: vs-shimmer 1.4s infinite;
+}
+
+.sk-title { height: 20px; width: 70%; }
+.sk-body  { width: 100%; }
+
+@keyframes vs-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 @media (max-width: 650px) {

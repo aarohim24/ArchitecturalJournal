@@ -1,4 +1,3 @@
-// #genai
 import { Routes, Route, Navigate, useParams } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './pages/Home'
@@ -11,11 +10,14 @@ import VisualStoryDetail from './pages/VisualStoryDetail'
 import About from './pages/About'
 import Admin from './pages/Admin'
 
-const ADMIN_KEY = import.meta.env.VITE_ADMIN_KEY || '' // #genai
+// Use a sentinel that can never be matched by an empty URL segment
+const ADMIN_KEY = import.meta.env.VITE_ADMIN_KEY || '__unset__'
 
-function AdminGuard() { // #genai
+function AdminGuard() {
   const { secretKey } = useParams()
-  if (secretKey !== ADMIN_KEY) return <Navigate to="/" replace />
+  if (!import.meta.env.VITE_ADMIN_KEY || secretKey !== ADMIN_KEY) {
+    return <Navigate to="/" replace />
+  }
   return <Admin />
 }
 
