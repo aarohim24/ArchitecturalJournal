@@ -150,6 +150,17 @@ async def validate_image(file: UploadFile) -> None:
 
 
 def save_file(file: UploadFile, subfolder: str = "images") -> str:
+    # Always reset the underlying file pointer to the beginning.
+    # validate_image() reads the first 12 bytes for magic-byte checking and then
+    # calls await file.seek(0) on the async UploadFile wrapper — but on some
+    # Starlette versions that does NOT reset the synchronous file.file pointer.
+    # Cloudinary (and shutil.copyfileobj) read from file.file directly, so if
+    # the pointer is anywhere past 0 they receive partial / empty data → 500.
+    try:
+        file.file.seek(0)
+    except Exception:
+        pass
+
     if USE_CLOUDINARY:
         result = cloudinary.uploader.upload(
             file.file,
