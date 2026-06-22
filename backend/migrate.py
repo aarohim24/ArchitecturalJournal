@@ -42,6 +42,12 @@ def column_exists(conn, table: str, column: str) -> bool:
         return result.fetchone() is not None
 
 def run():
+    # Run create_all first to pick up/initialize all tables
+    from database import Base, engine as db_engine
+    from models import WritingImage, FragmentImage  # noqa: ensure models are imported
+    Base.metadata.create_all(bind=db_engine)
+    print("  New tables created/verified.")
+
     with engine.connect() as conn:
         for stmt in MIGRATIONS:
             # Parse table and column from the ALTER TABLE statement
@@ -55,11 +61,6 @@ def run():
             else:
                 print(f"  Skipping (exists): {table}.{column}")
 
-    # Also run create_all to pick up new tables
-    from database import Base, engine as db_engine
-    from models import WritingImage, FragmentImage  # noqa: ensure models are imported
-    Base.metadata.create_all(bind=db_engine)
-    print("  New tables created (if missing).")
     print("Migration complete.")
 
 if __name__ == "__main__":

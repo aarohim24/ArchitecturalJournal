@@ -55,7 +55,12 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(title="Architecture in Fragments API", lifespan=lifespan)
 
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
-_allowed_origins: set[str] = {"http://localhost:5173", "http://localhost:3000"}
+_allowed_origins: set[str] = {
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:3000",
+}
 if FRONTEND_URL:
     _allowed_origins.add(FRONTEND_URL.rstrip("/"))
 
@@ -63,8 +68,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=list(_allowed_origins),
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "X-Admin-Key"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # ── Cloudinary ─────────────────────────────────────────────────────────────────
@@ -125,7 +130,19 @@ async def validate_image(file: UploadFile) -> None:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"'{file.filename}' is not a supported image (JPEG, PNG, GIF, WebP).",
         )
-    if file.size and file.size > MAX_FILE_BYTES:
+    
+    # Safely get the file size across different Starlette/FastAPI versions
+    file_size = getattr(file, "size", None)
+    if file_size is None:
+        try:
+            # Fallback: seek to the end of the underlying file object to determine size
+            file.file.seek(0, 2)
+            file_size = file.file.tell()
+            file.file.seek(0)
+        except Exception:
+            file_size = None
+
+    if file_size and file_size > MAX_FILE_BYTES:
         raise HTTPException(
             status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
             detail="File exceeds the 10 MB size limit.",
