@@ -1,4 +1,5 @@
 import logging
+import io
 import os
 import uuid
 import shutil
@@ -149,30 +150,33 @@ async def validate_image(file: UploadFile) -> None:
         )
 
 
-def save_file(file: UploadFile, subfolder: str = "images") -> str:
-    # Always reset the underlying file pointer to the beginning.
-    # validate_image() reads the first 12 bytes for magic-byte checking and then
-    # calls await file.seek(0) on the async UploadFile wrapper — but on some
-    # Starlette versions that does NOT reset the synchronous file.file pointer.
-    # Cloudinary (and shutil.copyfileobj) read from file.file directly, so if
-    # the pointer is anywhere past 0 they receive partial / empty data → 500.
-    try:
-        file.file.seek(0)
-    except Exception:
-        pass
+async def save_file(file: UploadFile, subfolder: str = "images") -> str:
+    """Read the entire upload into memory, then persist it.
+
+    Using `await file.read()` + io.BytesIO is the only fully-reliable way to
+    hand file data to Cloudinary.  Passing `file.file` (SpooledTemporaryFile)
+    directly can silently fail when:
+      - the file is still in memory and SpooledTemporaryFile.fileno() raises
+        UnsupportedOperation (Cloudinary tries to stat the fd).
+      - the read-pointer is not exactly at 0 after validate_image (seek
+        behaviour differs across Starlette versions).
+    Reading into bytes first eliminates both classes of bug permanently.
+    """
+    content = await file.read()          # guaranteed full file, position 0
 
     if USE_CLOUDINARY:
         result = cloudinary.uploader.upload(
-            file.file,
+            io.BytesIO(content),         # fresh buffer — no pointer concerns
             folder=f"architecture-journal/{subfolder}",
             resource_type="image",
         )
         return result["secure_url"]
+
     ext = os.path.splitext(file.filename)[1].lower()
     filename = f"{uuid.uuid4().hex}{ext}"
     path = os.path.join(UPLOAD_DIR, subfolder, filename)
     with open(path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+        buffer.write(content)
     return f"/uploads/{subfolder}/{filename}"
 
 
@@ -289,7 +293,7 @@ async def create_writing(
     image_url = None
     if is_valid_upload(cover_image):
         await validate_image(cover_image)
-        image_url = save_file(cover_image, "images")
+        image_url = await save_file(cover_image, "images")
     w = Writing(
         title=title, subtitle=subtitle, summary=summary,
         content=content, featured=featured, cover_image=image_url,
@@ -302,7 +306,7 @@ async def create_writing(
             if not is_valid_upload(img_file):
                 continue
             await validate_image(img_file)
-            url = save_file(img_file, "images")
+            url = await save_file(img_file, "images")
             db.add(WritingImage(writing_id=w.id, image_path=url, order=i))
 
     db.commit()
@@ -332,7 +336,7 @@ async def update_writing(
     w.featured = featured
     if is_valid_upload(cover_image):
         await validate_image(cover_image)
-        w.cover_image = save_file(cover_image, "images")
+        w.cover_image = await save_file(cover_image, "images")
 
     if supporting_images:
         current_count = len(w.supporting_images)
@@ -340,7 +344,7 @@ async def update_writing(
             if not is_valid_upload(img_file):
                 continue
             await validate_image(img_file)
-            url = save_file(img_file, "images")
+            url = await save_file(img_file, "images")
             db.add(WritingImage(writing_id=w.id, image_path=url, order=current_count + i))
 
     db.commit()
@@ -388,10 +392,10 @@ async def create_fragment(
     cover_url = None
     if is_valid_upload(cover_image):
         await validate_image(cover_image)
-        cover_url = save_file(cover_image, "images")
+        cover_url = await save_file(cover_image, "images")
     elif is_valid_upload(image):
         await validate_image(image)
-        cover_url = save_file(image, "images")
+        cover_url = await save_file(image, "images")
 
     f = Fragment(title=title, subtitle=subtitle, text=text,
                  cover_image=cover_url, image=cover_url)
@@ -403,7 +407,7 @@ async def create_fragment(
             if not is_valid_upload(img_file):
                 continue
             await validate_image(img_file)
-            url = save_file(img_file, "images")
+            url = await save_file(img_file, "images")
             db.add(FragmentImage(fragment_id=f.id, image_path=url, order=i))
 
     db.commit()
@@ -430,12 +434,12 @@ async def update_fragment(
     f.text = text
     if is_valid_upload(cover_image):
         await validate_image(cover_image)
-        url = save_file(cover_image, "images")
+        url = await save_file(cover_image, "images")
         f.cover_image = url
         f.image = url
     elif is_valid_upload(image):
         await validate_image(image)
-        url = save_file(image, "images")
+        url = await save_file(image, "images")
         f.cover_image = url
         f.image = url
 
@@ -445,7 +449,7 @@ async def update_fragment(
             if not is_valid_upload(img_file):
                 continue
             await validate_image(img_file)
-            url = save_file(img_file, "images")
+            url = await save_file(img_file, "images")
             db.add(FragmentImage(fragment_id=f.id, image_path=url, order=current_count + i))
 
     db.commit()
@@ -497,7 +501,7 @@ async def create_visual_story(
             if not is_valid_upload(img_file):
                 continue
             await validate_image(img_file)
-            url = save_file(img_file, "visual_stories")
+            url = await save_file(img_file, "visual_stories")
             caption = caps[i] if i < len(caps) else None
             story_img = VisualStoryImage(
                 story_id=story.id, image_path=url, caption=caption, order=i
@@ -569,7 +573,7 @@ async def update_about(
         a.body = body
     if is_valid_upload(author_image):
         await validate_image(author_image)
-        a.author_image = save_file(author_image, "images")
+        a.author_image = await save_file(author_image, "images")
     db.commit()
     db.refresh(a)
     return _serialize_about(a)
@@ -593,7 +597,7 @@ async def update_hero_image(
     if not is_valid_upload(hero_image):
         raise HTTPException(400, "No valid image provided")
     await validate_image(hero_image)
-    url = save_file(hero_image, "images")
+    url = await save_file(hero_image, "images")
     s = db.query(SiteSettings).first()
     if not s:
         s = SiteSettings(hero_image=url)
