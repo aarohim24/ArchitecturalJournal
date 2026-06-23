@@ -116,6 +116,7 @@ export default function Admin() {
     try {
       await api.updateAbout(fd)
       flash('About page updated!')
+      resetForm()
     } catch (err) {
       flash(err.message || 'Failed to update about page.', 'error')
     }

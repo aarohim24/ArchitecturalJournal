@@ -232,6 +232,24 @@ def _serialize_story(s: VisualStory) -> dict:
     }
 
 
+def _serialize_about(a: AboutContent) -> dict:
+    return {
+        "id": a.id,
+        "heading": a.heading,
+        "body": a.body,
+        "author_image": a.author_image,
+        "updated_at": a.updated_at,
+    }
+
+
+def _serialize_settings(s: SiteSettings) -> dict:
+    return {
+        "id": s.id,
+        "hero_image": s.hero_image,
+        "updated_at": s.updated_at,
+    }
+
+
 # ── Health ─────────────────────────────────────────────────────────────────────
 
 @app.get("/api/health")
@@ -530,8 +548,9 @@ def get_about(db: Session = Depends(get_db)):
             "heading": "Architecture in Fragments",
             "body": "A spatial journal exploring the quiet moments of architecture and spatial experience.",
             "author_image": None,
+            "updated_at": None,
         }
-    return a
+    return _serialize_about(a)
 
 
 @app.put("/api/about", dependencies=[Depends(require_admin)])
@@ -553,7 +572,7 @@ async def update_about(
         a.author_image = save_file(author_image, "images")
     db.commit()
     db.refresh(a)
-    return a
+    return _serialize_about(a)
 
 
 # ── Site Settings ──────────────────────────────────────────────────────────────
@@ -562,8 +581,8 @@ async def update_about(
 def get_settings(db: Session = Depends(get_db)):
     s = db.query(SiteSettings).first()
     if not s:
-        return {"id": None, "hero_image": None}
-    return s
+        return {"id": None, "hero_image": None, "updated_at": None}
+    return _serialize_settings(s)
 
 
 @app.put("/api/settings/hero-image", dependencies=[Depends(require_admin)])
@@ -583,4 +602,4 @@ async def update_hero_image(
         s.hero_image = url
     db.commit()
     db.refresh(s)
-    return s
+    return _serialize_settings(s)
