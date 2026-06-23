@@ -44,6 +44,11 @@
   margin: 0.25rem 0 0.5rem;
 }
 
+.admin-hint a {
+  color: var(--ruddy-brown);
+  text-decoration: underline;
+}
+
 .admin-captions {
   display: flex;
   flex-direction: column;
@@ -103,6 +108,36 @@
 
 .admin-section h2:first-child {
   margin-top: 0;
+}
+
+/* ── form-header (title + cancel button side by side) ── */
+.admin-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.admin-form-header h2 {
+  margin: 0 !important;
+}
+
+.admin-cancel {
+  background: none;
+  border: 1px solid rgba(46, 33, 28, 0.25);
+  padding: 0.35rem 0.9rem;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-cancel:hover {
+  background: rgba(46, 33, 28, 0.06);
+  color: var(--raisin-black);
 }
 
 .admin-form {
@@ -171,11 +206,17 @@
   font-size: 0.82rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  transition: background 0.3s;
+  transition: background 0.3s, opacity 0.2s;
+  cursor: pointer;
 }
 
-.admin-submit:hover {
+.admin-submit:hover:not(:disabled) {
   background: var(--saddle-brown);
+}
+
+.admin-submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .admin-list {
@@ -192,28 +233,56 @@
   padding: 0.75rem 1rem;
   background: var(--cream);
   border-radius: 6px;
+  gap: 0.75rem;
 }
 
 .admin-list li span {
   font-size: 0.88rem;
   color: var(--text-dark);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.admin-list li button {
+/* ── item action buttons ── */
+.admin-item-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.admin-item-actions button {
   background: none;
   border: 1px solid rgba(192, 98, 38, 0.3);
   padding: 0.35rem 0.75rem;
   border-radius: 4px;
   font-size: 0.72rem;
-  color: var(--ruddy-brown);
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  transition: all 0.3s;
+  transition: all 0.2s;
+  cursor: pointer;
 }
 
-.admin-list li button:hover {
-  background: var(--ruddy-brown);
-  color: var(--pearl);
+.admin-edit-btn {
+  color: var(--ruddy-brown) !important;
+  border-color: rgba(192, 98, 38, 0.35) !important;
+}
+
+.admin-edit-btn:hover {
+  background: var(--ruddy-brown) !important;
+  color: var(--pearl) !important;
+}
+
+.admin-delete-btn {
+  color: #9b3a20 !important;
+  border-color: rgba(155, 58, 32, 0.3) !important;
+}
+
+.admin-delete-btn:hover {
+  background: #9b3a20 !important;
+  color: var(--pearl) !important;
 }
 
 .admin-empty {

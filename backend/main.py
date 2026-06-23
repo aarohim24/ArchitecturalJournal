@@ -13,6 +13,7 @@ load_dotenv()
 from fastapi import FastAPI, Depends, HTTPException, Header, UploadFile, File, Form, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from starlette.concurrency import run_in_threadpool
 from sqlalchemy.orm import Session
 
 from database import engine, get_db, Base
@@ -151,25 +152,38 @@ async def validate_image(file: UploadFile) -> None:
 
 
 async def save_file(file: UploadFile, subfolder: str = "images") -> str:
-    """Read the entire upload into memory, then persist it.
+    """Read the entire upload into memory, then persist.
 
-    Using `await file.read()` + io.BytesIO is the only fully-reliable way to
-    hand file data to Cloudinary.  Passing `file.file` (SpooledTemporaryFile)
-    directly can silently fail when:
-      - the file is still in memory and SpooledTemporaryFile.fileno() raises
-        UnsupportedOperation (Cloudinary tries to stat the fd).
-      - the read-pointer is not exactly at 0 after validate_image (seek
-        behaviour differs across Starlette versions).
-    Reading into bytes first eliminates both classes of bug permanently.
+    * await file.read() gives us a clean, position-independent bytes buffer.
+    * io.BytesIO(content) avoids every SpooledTemporaryFile issue.
+    * run_in_threadpool keeps the blocking Cloudinary network call off the
+      async event loop (direct call blocks uvicorn and can cause crashes).
+    * The try/except converts any Cloudinary SDK exception into a proper
+      HTTP 500 whose *detail* field surfaces the real error so the UI shows
+      something meaningful instead of a generic "failed to fetch".
     """
-    content = await file.read()          # guaranteed full file, position 0
+    content = await file.read()
+    if not content:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Uploaded file appears to be empty.",
+        )
 
     if USE_CLOUDINARY:
-        result = cloudinary.uploader.upload(
-            io.BytesIO(content),         # fresh buffer — no pointer concerns
-            folder=f"architecture-journal/{subfolder}",
-            resource_type="image",
-        )
+        buf = io.BytesIO(content)  # fresh buffer — position 0, no fileno() issue
+        try:
+            result = await run_in_threadpool(
+                cloudinary.uploader.upload,
+                buf,
+                folder=f"architecture-journal/{subfolder}",
+                resource_type="image",
+            )
+        except Exception as exc:
+            logger.error("Cloudinary upload failed: %s", exc, exc_info=True)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Image storage failed — {exc}",
+            )
         return result["secure_url"]
 
     ext = os.path.splitext(file.filename)[1].lower()
@@ -178,7 +192,6 @@ async def save_file(file: UploadFile, subfolder: str = "images") -> str:
     with open(path, "wb") as buffer:
         buffer.write(content)
     return f"/uploads/{subfolder}/{filename}"
-
 
 # ── Serialiser helpers ─────────────────────────────────────────────────────────
 
